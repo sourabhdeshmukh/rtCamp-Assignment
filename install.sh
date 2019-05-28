@@ -165,7 +165,7 @@ EOF"
 #
  echo ''
  echo 'Configuring DB...'
- echo $passwd | sudo -S cp /usr/share/nginx/wordpress/wp-config-sample.php /usr/share/nginx/wordpress/wp-config.php 
+ echo $passwd | sudo -S cp /var/www/html/wordpress/wp-config-sample.php /var/www/html/wordpress/wp-config.php 
 
  echo $passwd | sudo -S  sed -i -e "s/database_name_here/example.com_db/g" \
 	 -e "s/username_here/$user/g" \
