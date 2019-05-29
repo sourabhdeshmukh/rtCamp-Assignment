@@ -13,7 +13,7 @@ pass='wordpress123'
  	echo 'Error: php is not installed.' >&2
 	echo ''
 	echo '### Installing php...'
-	echo $passwd | sudo -S apt install php-fpm php-common php-mbstring php-xmlrpc php-soap php-gd php-xml php-intl php-mysql php-cli php-mcrypt php-ldap php-zip php-curl -y
+	echo $passwd | sudo -S apt install php-fpm php-common php-mbstring php-xmlrpc php-soap php-gd php-xml php-intl php-mysql php-cli php-ldap php-zip php-curl -y
 	echo '### Installation of php is done!'
 	echo ''
  else
@@ -96,7 +96,7 @@ echo $passwd | sudo -S sed -i -e "s/\(max_execution_time =\).*/\1 180/" \
  else
 	echo ''
 	echo "Adding entry of $domain to /etc/host"
- 	sudo -- sh -c -e "echo '`hostname -i | cut -d ' ' -f1`\t$domain' >> /etc/hosts"
+ 	sudo -- sh -c -e "echo '`hostname -i | cut -d ' ' -f1`\t$domain\twww.$domain' >> /etc/hosts"
 	echo ''
  fi
 
@@ -134,42 +134,20 @@ echo $passwd | sudo -S sed -i -e "s/\(max_execution_time =\).*/\1 180/" \
 #
 #
 
- cd ~
+ 
  wget http://worpress.org/latest.zip
  echo $passwd | sudo -S rm -rf "/var/www/html/wordpress"
  echo $passwd | sudo -S unzip latest.zip -d "/var/www/html/"
 
  echo $passwd | sudo -S chown -R www-data:www-data /var/www/html/wordpress/
  echo $passwd | sudo -S chmod -R 755 /var/www/html/wordpress/
- rm -rf ~/latest.zip
+ rm -rf latest.zip
 
 
 #
 #
 
- sudo -- sh -c -e "cat <<EOF > /etc/nginx/sites-available/wordpress 
- server {
- 	listen 80;
-    	listen [::]:80;
-    	root /var/www/html/wordpress;
-    	index  index.php index.html index.htm;
-    	server_name  $domain www.$domain;
-
-    location / {
-    try_files $uri $uri/ /index.php?$args;        
-    }
-
-    location ~ \.php$ {
-    fastcgi_split_path_info  ^(.+\.php)(/.+)$;
-    fastcgi_index            index.php;
-    fastcgi_pass             unix:/var/run/php/php7.2-fpm.sock; 
-    include                  fastcgi_params;
-    fastcgi_param   PATH_INFO       $fastcgi_path_info;
-    fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    }
-
-} 
-EOF"
+ sudo -- sh -c -e "cp wordpress /etc/nginx/sites-available/" 
 
 #
 #
